@@ -1,39 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import Categories from "./Categories";
 
 export default function AddBook() {
-  //  doc them nhe
   // https://topdev.vn/blog/lam-sao-de-fetch-du-lieu-bang-react-hook/
+  // Foreach loop in return statement of react
 
   const { register, handleSubmit, watch, errors } = useForm();
   const [data, setData] = useState({});
   const [page_size, setPage_size] = useState({});
   const [categories, setCategories] = useState({});
-  const [author, setAuthor] = useState("");
-  const [category_ids, setCategory_ids] = useState([]);
-  const [code, setCode] = useState("");
-  const [images, setImages] = useState([]);
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [quantity, setQuantity] = useState(1);
 
   var dataFrom = {
-    author: author,
-    category_ids: category_ids,
-    code: code,
-    images: images,
-    name: name,
-    price: price,
-    quantity: quantity,
+    author: "",
+    category_ids: [],
+    code: "123",
+    images: [],
+    name: "",
+    price: 0,
+    quantity: 0,
     status: true,
   };
-
   const onSubmit = (data) => {
-    console.log("data new : ", data);
-    console.log("dataForm : ", dataFrom);
+    dataFrom.author = data.author;
+    dataFrom.category_ids.push(data.category_ids);
+    dataFrom.images.push(data.images);
+    dataFrom.name = data.name;
+    dataFrom.price = data.price;
+    dataFrom.quantity = data.quantity;
+    console.log("Check ");
+    var status = data.status === "true" ? true : false;
+    console.log("Status : ", status);
+    dataFrom.status = status;
     fetch(`http://localhost:1234/api/v1/book/books/`, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(dataFrom),
       headers: new Headers({
         Accept: "application/json",
       }),
@@ -59,7 +60,6 @@ export default function AddBook() {
       .catch((error) => console.log(error));
   }, []);
 
-  // console.log(setData);
   return (
     <div className="form-w3layouts">
       <div className="row">
@@ -114,13 +114,20 @@ export default function AddBook() {
                       Loại sách
                     </label>
                     <div className="col-lg-6">
-                      <input
-                        className=" form-control"
-                        id="lastname"
-                        name="category_ids"
-                        type="text"
+                      <select
+                        className="form-control "
                         ref={register}
-                      />
+                        name="category_ids"
+                        form="carform"
+                      >
+                        {/* {categories.map((cate) => (
+                          <Categories cate={cate} />
+                        ))} */}
+                        <option value="Ngon tinh 1">Ngon tinh 1</option>
+                        <option value="Ngon tinh 2">Ngon tinh 2</option>
+                        <option value="Ngon tinh 3">Ngon tinh 3</option>
+                        <option value="Ngon tinh 4">Ngon tinh 4</option>
+                      </select>
                     </div>
                   </div>
                   <div className="form-group ">
@@ -172,6 +179,25 @@ export default function AddBook() {
                         type="text"
                         ref={register}
                       />
+                    </div>
+                  </div>
+                  <div className="form-group ">
+                    <label
+                      htmlFor="confirm_password"
+                      className="control-label col-lg-3"
+                    >
+                      Trạng thái
+                    </label>
+                    <div className="col-lg-6">
+                      <select
+                        className="form-control "
+                        ref={register}
+                        name="status"
+                        form="carform"
+                      >
+                        <option value="true">Còn sách</option>
+                        <option value="false">Hết sách </option>
+                      </select>
                     </div>
                   </div>
                   <div className="form-group">
